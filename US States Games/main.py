@@ -20,7 +20,8 @@ while guessed_states_number !=50:
     states_list=df['state'].to_list()
     title=f"{guessed_states_number}/{len(states_list)} States Correct"
     user_input=screen.textinput(title,"What's another state name?: ").title()
-    print(user_input)
+    if user_input=="Exit":
+        break
     if user_input  not in states_list:
         info.no_state()
     elif user_input  in guessed_states_list:
@@ -33,7 +34,20 @@ while guessed_states_number !=50:
         guessed_states_number+=1
         guessed_states_list.append(user_input)
 
-info.win()
+if guessed_states_number==50:
+    info.win()
+
+states_to_learn=[]
+
+for item in states_list:
+    if item not in guessed_states_list:
+        states_to_learn.append(item)
+
+data_dict={"States to learn": states_to_learn}
+
+df_states_to_learn=pd.DataFrame(data_dict)
+df_states_to_learn.index=df_states_to_learn.index+1
+df_states_to_learn.to_csv("states_to_learn.csv")
 
 
 
@@ -42,6 +56,3 @@ info.win()
 
 
 
-
-
-screen.exitonclick()

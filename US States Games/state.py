@@ -1,5 +1,4 @@
 from turtle import Turtle
-import time
 
 class State(Turtle):
     def __init__(self,name,x,y):
