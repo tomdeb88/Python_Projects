@@ -17,7 +17,7 @@ ticked=''
 
 
 
-
+# reset time
 def reset_app():
     global reps
     timer_label.config(text='Timer',fg=GREEN)
@@ -26,7 +26,7 @@ def reset_app():
     checkmark.config(text='')
     reps=0
 
-
+#timer
 def start_timer():
     global reps
     reps+=1
@@ -43,7 +43,7 @@ def start_timer():
 
 
 
-
+# counting down minutes
 def counting_down(number):
     global ticked
     minutes=math.floor(number/60)
