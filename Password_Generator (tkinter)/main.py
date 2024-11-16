@@ -2,9 +2,26 @@ from tkinter import *
 from tkinter import messagebox
 import random
 import pyperclip
+import json
+
+
+def search():
+    text=web_entry.get()
+    try:
+        with open('/home/tomasz/Desktop/passd/passwd.json', 'r') as file:
+            websites=json.load(file)
+    except FileNotFoundError:
+        messagebox.showinfo(title="Error",message='No Data File Found')
+    else:
+        if text  in websites.keys():
+            messagebox.showinfo(title=text, message=f'Email: {websites[text]['email']}\nPassword: {websites[text]['password']}')
+            pyperclip.copy(websites[text]['password'])
+
+        else:
+            messagebox.showinfo(title="Error", message='No details for the website exists')
+
 
 #---------------generating password--------------------
-
 def generate_password():
 
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
@@ -32,6 +49,12 @@ def add_passwd():
     web_name=web_entry.get()
     email_name=email_entry.get()
     password=password_entry.get()
+    new_data={
+        web_name:{
+            'email':email_name,
+            'password':password,
+        }
+    }
 
     if len(web_name)==0 and len(password)==0:
         messagebox.showinfo('Warning',"Your website and password fields can't be blank")
@@ -40,10 +63,18 @@ def add_passwd():
     elif len(password)==0:
         messagebox.showinfo("Warning","Your password field can't be blank")
     else:
-        good_to_save=messagebox.askyesno(web_name,message=f"Details entered:\nEmail: {email_name}\nPassword: {password}\nIs it ok to save?")
-        if good_to_save:
-            with open('/home/tomasz/Desktop/passd/passwd.txt', 'a') as file:
-                file.write(f"Website: {web_name} | Login: {email_name} | Password: {password}\n")
+        try:
+            with open('/home/tomasz/Desktop/passd/passwd.json', 'r') as file:
+                data=json.load(file)
+                data.update(new_data)
+        except FileNotFoundError:
+            with open('/home/tomasz/Desktop/passd/passwd.json', 'w') as file:
+                json.dump(new_data,file)
+
+        else:
+            with open('/home/tomasz/Desktop/passd/passwd.json', 'w') as file:
+                json.dump(data,file,indent=4)
+
     web_entry.delete(0, END)
     password_entry.delete(0, END)
 
@@ -67,15 +98,15 @@ password_label.grid(column=0,row=3)
 
 
 #Entries
-web_entry=Entry(width=35)
+web_entry=Entry(width=21)
 web_entry.focus()
-web_entry.grid(column=1,row=1,columnspan=2,pady=5)
+web_entry.grid(column=1,row=1,pady=5,padx=4,sticky=W)
 email_entry=Entry(width=35)
 email_entry.insert(0,'tomdeb00@protonmail.com')
 email_entry.grid(column=1,row=2,columnspan=2,pady=5)
 
 password_entry=Entry(width=21)
-password_entry.grid(column=1,row=3,pady=5,sticky=W)
+password_entry.grid(column=1,row=3,pady=5,padx=3,sticky=W)
 
 
 #Buttons
@@ -85,6 +116,9 @@ gen_button.grid(column=2,row=3)
 
 add_button=Button(text="Add",width=33,command=add_passwd)
 add_button.grid(row=4,column=1,columnspan=2)
+
+search_button=Button(text="Search",padx=20,bg='#8068EF',command=search)
+search_button.grid(column=2,row=1)
 
 
 
