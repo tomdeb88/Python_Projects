@@ -5,8 +5,6 @@ import random
 import sys
 
 
-from pandas.core.interchange.dataframe_protocol import DataFrame
-
 BACKGROUND_COLOR = "#B1DDC6"
 
 try:
@@ -28,7 +26,6 @@ def green_button_pressed():
     display_new_word()
 
 
-
 def display_new_word():
     global random_pair, timer,words_list
     window.after_cancel(timer)
@@ -37,10 +34,6 @@ def display_new_word():
     canvas.itemconfig(top_text, text='French',fill='black')
     canvas.itemconfig(background,image=front_card)
     timer=window.after(3000,eng_card)
-
-
-
-
 
 
 def eng_card():
