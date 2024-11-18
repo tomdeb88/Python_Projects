@@ -1,23 +1,40 @@
-from random import random
 from tkinter import *
+from tkinter import messagebox
 import pandas as pd
 import random
+import sys
 
+
+from pandas.core.interchange.dataframe_protocol import DataFrame
 
 BACKGROUND_COLOR = "#B1DDC6"
 
-df=pd.read_csv('./data/french_words.csv')
-words_list=df.to_dict(orient='records')
+try:
+    df=pd.read_csv('./data/words_to_learn.csv')
+except FileNotFoundError:
+    df = pd.read_csv('./data/french_words.csv')
+finally:
+    words_list=df.to_dict(orient='records')
 
-english_word=""
+random_pair={}
+
+def green_button_pressed():
+    words_list.remove(random_pair)
+    if len(words_list)<1:
+        messagebox.showinfo(title='You got it',message="There is no more words left to learn")
+        sys.exit()
+    data=pd.DataFrame(words_list)
+    data.to_csv("./data/words_to_learn.csv",index=False)
+    display_new_word()
+
+
 
 def display_new_word():
-    global english_word, timer
+    global random_pair, timer,words_list
     window.after_cancel(timer)
     random_pair = random.choice(words_list)
     canvas.itemconfig(bottom_text, text=random_pair['French'],fill='black')
     canvas.itemconfig(top_text, text='French',fill='black')
-    english_word=random_pair['English']
     canvas.itemconfig(background,image=front_card)
     timer=window.after(3000,eng_card)
 
@@ -28,7 +45,7 @@ def display_new_word():
 
 def eng_card():
     canvas.itemconfig(background,image=back_card)
-    canvas.itemconfig(bottom_text,fill='white', text=english_word)
+    canvas.itemconfig(bottom_text,fill='white', text=random_pair['English'])
     canvas.itemconfig(top_text,fill='white', text='English')
 
 
@@ -54,7 +71,7 @@ x_button=Button(image=x_button_image,highlightthickness=0,borderwidth=0,command=
 x_button.grid(column=0,row=1)
 
 y_button_image=PhotoImage(file='./images/right.png')
-y_button=Button(image=y_button_image,highlightthickness=0,borderwidth=0,command=display_new_word)
+y_button=Button(image=y_button_image,highlightthickness=0,borderwidth=0,command=green_button_pressed)
 y_button.grid(column=1,row=1)
 
 
