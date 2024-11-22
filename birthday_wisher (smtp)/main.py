@@ -4,7 +4,7 @@ import random
 import smtplib
 
 MY_EMAIL="kot.kiszon23@gmail.com"
-PASSWORD='rejyvcyxoaksh***'
+PASSWORD='rejyvcyxoakshwsm'
 
 birthday_man=''
 birthday_man_email=''
@@ -31,7 +31,7 @@ for(index,row) in bdays.iterrows():
         birthday_man=row['name']
         birthday_man_email=row['email']
         ### picking random letter from the list
-        random_letter=f'./letter_templates/letter_{random.choice('123')}.txt'
+        random_letter=f'./letter_templates/letter_{random.randint(1,3)}.txt'
         with open(random_letter,'r') as file:
             wishes=file.read()
             wishes=wishes.replace('[NAME]',birthday_man)
